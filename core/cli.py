@@ -11,7 +11,7 @@ class cli:
         console.setShowTimeDefault(False)
 
 
-    def get(self, url):
+    def get(self, url, cache="./.cache"):
         console.log(f"Downloading crawler -> {url}")
 
         '''
@@ -27,7 +27,7 @@ class cli:
         exceptions happen in the process.
         '''
         try:
-            Repo.clone_from(f"https://{url}", os.path.join("./crawlers", parsed_url.path))
+            Repo.clone_from(f"https://{url}", os.path.join(cache, "scripts", parsed_url.path))
         except:
             console.warn("Repository already exists, please do a clean checkout if not working")
 
@@ -37,10 +37,11 @@ class cli:
         commands in the future & also take out the need of directory
         scanning to determine script paths
         '''
-        if os.path.isfile("./crawlers/metadata.json"):
+        metadata_file_path = os.path.join(cache, "scripts", "metadata.json")
+        if os.path.isfile(metadata_file_path):
 
             metadata = ""
-            with open("./crawlers/metadata.json", "r") as f:
+            with open(metadata_file_path, "r") as f:
                 metadata = json.load(f)
 
             try:
@@ -49,13 +50,13 @@ class cli:
                 console.log("Updating meta data information")
 
                 metadata.append(f"{url}")
-                f = open("./crawlers/metadata.json", "w")
+                f = open(metadata_file_path, "w")
                 f.write(json.dumps(metadata))
                 f.close()
 
         else:
             console.log("Creating meta data information")
-            f = open("./crawlers/metadata.json", "w")
+            f = open(metadata_file_path, "w")
             f.write(json.dumps([f"{url}"]))
             f.close()
 
