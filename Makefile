@@ -1,4 +1,4 @@
 default: run
 
 run:
-	python raptor.py
+	python raptor
